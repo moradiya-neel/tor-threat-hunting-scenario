@@ -1,9 +1,9 @@
-# Threat Hunting Scenario-based Project
+# Threat Hunt: Unauthorized Tor Usage
 
 <img width="400" src="https://github.com/user-attachments/assets/44bac428-01bb-4fe9-9d85-96cba7698bee" alt="Tor Logo with the onion and a crosshair on it"/>
 
-# Threat Hunt Report: Unauthorized TOR Usage
-- [Scenario Creation](https://github.com/moradiya-neel/tor-threat-hunting-scenario/blob/main/docs/threat-hunting-scenario-creation.md)
+- [Scenario creation](docs/threat-hunting-scenario-creation.md)
+- [KQL queries used in this hunt](queries/tor-hunt.kql)
 
 ## Platforms and Languages Leveraged
 - Windows 11 Virtual Machine (Microsoft Azure)
@@ -147,6 +147,15 @@ DeviceNetworkEvents
 On January 3, 2026, the user `nmr` on device `vm-windows` downloaded and silently installed Tor Browser using the `/S` flag to avoid detection. Within minutes, `tor.exe` connected to multiple Tor relay nodes on ports 443 and 9001, establishing an anonymous browsing session. Approximately 14 minutes later, the user created a file named `tor-shopping-list.txt` on the desktop, which was modified shortly after - suggesting potential intent to purchase items through dark web marketplaces.
 
 This activity represents a policy violation and potential insider threat. The silent installation, use of anonymization tools, and creation of a "shopping list" file indicate deliberate attempts to bypass network security controls and potentially engage in illicit activity.
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Tactic | Technique | Evidence |
+| --- | --- | --- |
+| Command and Control | T1105 Ingress Tool Transfer | Tor Browser installer downloaded to the Downloads folder |
+| Command and Control | T1090.003 Proxy: Multi-hop Proxy | `tor.exe` connected to Tor relays on ports 9001 and 443 and to the local SOCKS port 9150 |
 
 ---
 
