@@ -1,0 +1,34 @@
+// KQL queries from the Unauthorized Tor Usage threat hunt (Microsoft Defender for Endpoint advanced hunting).
+// Device: vm-windows, user: nmr. See README.md for the findings each query produced.
+
+// 1. Searched the DeviceFileEvents Table
+DeviceFileEvents
+| where DeviceName == "vm-windows"
+| where FileName contains "tor"
+| where InitiatingProcessAccountName == "nmr"
+| where Timestamp >= datetime(2026-01-03T14:26:52.2624898Z)
+| project Timestamp, Account = InitiatingProcessAccountName, ActionType, FileName, FolderPath, SHA256
+| order by Timestamp
+
+// 2. Searched the DeviceProcessEvents Table
+DeviceProcessEvents
+| where DeviceName == "vm-windows"
+| where ProcessCommandLine contains "tor-browser-windows-x86_64-portable-15.0.3.exe"
+| project Timestamp, AccountName, ActionType, FileName, FolderPath, SHA256, ProcessCommandLine
+| order by Timestamp desc
+
+// 3. Searched the DeviceProcessEvents Table for TOR Browser Execution
+DeviceProcessEvents
+| where DeviceName == "vm-windows"
+| where FileName has_any ("tor.exe", "firefox.exe", "tor-browser.exe")
+| order by Timestamp desc
+| project Timestamp, AccountName, ActionType, FileName, FolderPath, SHA256, ProcessCommandLine
+
+// 4. Searched the DeviceNetworkEvents Table for TOR Network Connections
+DeviceNetworkEvents
+| where DeviceName == "vm-windows"
+| order by Timestamp desc
+| where InitiatingProcessAccountName != "system"
+| where RemotePort in ("9001", "9030", "9150", "9040", "9051", "9050", "443", "80")
+| where InitiatingProcessFileName in ("firefox.exe", "tor.exe")
+| project Timestamp, InitiatingProcessAccountName, ActionType, RemoteIP, RemotePort, RemoteUrl, InitiatingProcessFileName, InitiatingProcessFolderPath
