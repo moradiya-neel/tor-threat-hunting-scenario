@@ -11,15 +11,15 @@
 - Kusto Query Language (KQL)
 - Tor Browser
 
-##  Scenario
+## Scenario
 
-Management suspects that some employees may be using TOR browsers to bypass network security controls because recent network logs show unusual encrypted traffic patterns and connections to known TOR entry nodes. Additionally, there have been anonymous reports of employees discussing ways to access restricted sites during work hours. The goal is to detect any TOR usage and analyze related security incidents to mitigate potential risks. If any use of TOR is found, notify management.
+Management suspects that some employees may be using Tor browsers to bypass network security controls because recent network logs show unusual encrypted traffic patterns and connections to known Tor entry nodes. Additionally, there have been anonymous reports of employees discussing ways to access restricted sites during work hours. The goal is to detect any Tor usage and analyze related security incidents to mitigate potential risks. If any use of Tor is found, notify management.
 
-### High-Level TOR-Related IoC Discovery Plan
+### High-Level Tor-Related IoC Discovery Plan
 
 - **Check `DeviceFileEvents`** for any `tor(.exe)` or `firefox(.exe)` file events.
 - **Check `DeviceProcessEvents`** for any signs of installation or usage.
-- **Check `DeviceNetworkEvents`** for any signs of outgoing connections over known TOR ports.
+- **Check `DeviceNetworkEvents`** for any signs of outgoing connections over known Tor ports.
 
 ---
 
@@ -61,7 +61,7 @@ DeviceProcessEvents
 
 ---
 
-### 3. Searched the `DeviceProcessEvents` Table for TOR Browser Execution
+### 3. Searched the `DeviceProcessEvents` Table for Tor Browser Execution
 
 Searched the `DeviceProcessEvents` table for any indication that the user `nmr` opened the Tor Browser. Evidence confirms the browser was launched at `2026-01-03T14:29:43.7227096Z`. Several subsequent instances of `firefox.exe` (Tor Browser) and `tor.exe` were spawned afterwards, indicating active usage.
 
@@ -78,7 +78,7 @@ DeviceProcessEvents
 
 ---
 
-### 4. Searched the `DeviceNetworkEvents` Table for TOR Network Connections
+### 4. Searched the `DeviceNetworkEvents` Table for Tor Network Connections
 
 Searched the `DeviceNetworkEvents` table for any indication that the Tor Browser established connections using known Tor ports. On January 3, 2026 at 9:30 AM, approximately one minute after installation, `tor.exe`, located in the folder `c:\users\employee\desktop\tor browser\browser\torbrowser\tor\tor.exe`, successfully established a connection to an external IP address (185.231.102.74) on port 9001 — a known Tor network relay port. The connection was initiated from the user's workstation, confirming that Tor Browser was not only installed but actively used to route traffic through the Tor anonymization network. Additional connections were observed to other external IPs over port 443. This activity indicates the user may have been attempting to bypass network security controls, hide browsing activity, or access restricted content.
 
